@@ -1,3 +1,41 @@
-/* 
-    General Styles
-*/
+:root {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: -webkit-fill-available;
+}
+
+main {
+    height: 100vh;
+    height: -webkit-fill-available;
+    max-height: 100vh;
+    overflow-x: auto;
+    overflow-y: hidden;
+
+}
+
+img {
+    object-fit: cover;
+    object-position: top;
+}
+
+a {
+    text-decoration: none;
+    transition: .15s ease-in-out;
+    display: block;
+    color: aliceblue;
+}
+
+
+a:hover {
+    color: grey;
+    transition: 0, 05s ease-in-out;
+}
+
+.active-link {
+    color: white;
+    border-left: 5px solid rgb(225 80 33);
+}

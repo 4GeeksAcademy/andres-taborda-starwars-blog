@@ -1,42 +1,53 @@
+import { element } from "prop-types";
+import { BASE_URL } from "../common/const";
+import { useFetchData } from "../common/hooks/useFetchData";
+import { useEffect } from "react";
+
 const getState = ({ getStore, getActions, setStore }) => {
+	const { data, isLoading, error, getData } = useFetchData()
+	
+	useEffect(() => {
+		console.log(data);
+		setStore({ result: data})		
+	}, [data]);
+
 	return {
 		store: {
-			demo: [
-				{
-					title: "FIRST",
-					background: "white",
-					initial: "white"
-				},
-				{
-					title: "SECOND",
-					background: "white",
-					initial: "white"
-				}
-			]
+			result:[],
+			favorites: [
+
+			], 
+			
 		},
 		actions: {
-			// Use getActions to call a function within a fuction
-			exampleFunction: () => {
-				getActions().changeColor(0, "green");
+			getData: async (category) => {
+				// const response = await fetch(`${BASE_URL}people/?page=1&limit=10`)
+				// if (!response.ok) {
+				// 	throw new Error(response.statusText);
+					
+				// }
+				// const { results } = await response.json()
+				// setStore({ result: results})
+				getData({ category:category })
 			},
-			loadSomeData: () => {
-				/**
-					fetch().then().then(data => setStore({ "foo": data.bar }))
-				*/
+			addFavorites: (element) => {
+				const { favorites } = getStore()
+				setStore({ favorites:[...favorites, element] })
+
+				const favoritesStorage = JSON.parse(localStorage.getItem("favorites")) || []
+				favoritesStorage.push(element)
+				localStorage.setItem("favorites", JSON.stringify(favoritesStorage))
 			},
-			changeColor: (index, color) => {
-				//get the store
-				const store = getStore();
-
-				//we have to loop the entire demo array to look for the respective index
-				//and change its color
-				const demo = store.demo.map((elm, i) => {
-					if (i === index) elm.background = color;
-					return elm;
-				});
-
-				//reset the global store
-				setStore({ demo: demo });
+			removeFavorites: (id) => {
+				const { favorites } = getStore()
+				const updatedFavorites = favorites.filter(element => element.uid !== id)
+				setStore({ favorites: updatedFavorites })
+				
+				localStorage.setItem("favorites", JSON.stringify(updatedFavorites))
+			},
+			getFavorites: () => {
+				const favorites = JSON.parse(localStorage.getItem("favorites")) || []
+				setStore({ favorites: favorites})
 			}
 		}
 	};
