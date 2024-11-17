@@ -3,11 +3,8 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Context } from '../store/AppContext';
 
-export const Card = ({element, category}) => {
+export const Card = ({element}) => {
   const { name, uid , image} = element
-  const [imageUrl, setImageUrl] = useState(
-    `https://starwars-visualguide.com/assets/img/${category}/${uid}.jpg`
-  );
  
 
   const [isFavorite, setIsFavorite] = useState(false);
@@ -49,6 +46,6 @@ export const Card = ({element, category}) => {
 }
 
 Card.propTypes = {
-  element: PropTypes.object,
-  category: PropTypes.string
+  element: PropTypes.object
+
 }

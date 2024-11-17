@@ -10,7 +10,7 @@ export const CardList = ({ result, category }) => {
       {
         result.map(element => (
           <li key={element.uid}>
-            <Card element={element} category={category}/>
+            <Card element={element}/>
           </li>
         ))
       }

@@ -22,7 +22,6 @@ const injectContext = PassedComponent => {
 		);
 
 		useEffect(() => {
-			//state.actions.getData("people")
 			state.actions.getFavorites()
 		}, []);
 

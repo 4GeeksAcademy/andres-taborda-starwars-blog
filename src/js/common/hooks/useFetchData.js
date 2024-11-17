@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { BASE_URL } from "../const";
 
+const localCache = new Map()
 
 export const useFetchData = () => {
   const [data, setData] = useState([]);
@@ -26,6 +27,20 @@ export const useFetchData = () => {
     const { category, page } = options
     const url = `${BASE_URL}${category}?page=${page|| "1"}&limit=10`
 
+    const urlLastSearch = JSON.parse(localStorage.getItem("lastSearch"))?.url || ""
+
+    if (localCache.get(url)) {
+      setData(localCache.get(url))
+      return
+    }
+
+    if (urlLastSearch === url) {
+      setData(JSON.parse(localStorage.getItem("lastSearch")).data)
+      console.log("load storage");
+      
+      return
+    }
+
     setError(null)
     setIsLoading(true)
 
@@ -50,6 +65,10 @@ export const useFetchData = () => {
       
       const data = await Promise.all(newData); 
       setData(data)
+
+      localCache.set(url,data)
+
+      localStorage.setItem("lastSearch", JSON.stringify({ url:url,data:data }))
 
     } catch (error) {
       console.log(error.message);      

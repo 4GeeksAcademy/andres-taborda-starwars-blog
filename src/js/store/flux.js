@@ -1,5 +1,3 @@
-import { element } from "prop-types";
-import { BASE_URL } from "../common/const";
 import { useFetchData } from "../common/hooks/useFetchData";
 import { useEffect } from "react";
 
@@ -7,7 +5,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 	const { data, isLoading, error, getData } = useFetchData()
 	
 	useEffect(() => {
-		console.log(data);
 		setStore({ result: data})		
 	}, [data]);
 
@@ -21,13 +18,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 		},
 		actions: {
 			getData: async (category) => {
-				// const response = await fetch(`${BASE_URL}people/?page=1&limit=10`)
-				// if (!response.ok) {
-				// 	throw new Error(response.statusText);
-					
-				// }
-				// const { results } = await response.json()
-				// setStore({ result: results})
 				getData({ category:category })
 			},
 			addFavorites: (element) => {
