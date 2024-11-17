@@ -11,10 +11,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
 			result:[],
-			favorites: [
-
-			], 
-			
+			favorites: [], 
+			details: null
 		},
 		actions: {
 			getData: async (category) => {
@@ -38,6 +36,22 @@ const getState = ({ getStore, getActions, setStore }) => {
 			getFavorites: () => {
 				const favorites = JSON.parse(localStorage.getItem("favorites")) || []
 				setStore({ favorites: favorites})
+			},
+			getDetails: async (id) => {
+				const urlDetails = getStore().result.find(element => element.uid === id)?.url
+				try {
+					const response = await fetch(urlDetails)
+					if (!response.ok) {
+						throw new Error("Failed to load data");
+						
+					}
+					const { result } = await response.json()
+					setStore({ details: result })
+
+				} catch (error) {
+					console.log(error);					
+				}
+				
 			}
 		}
 	};

@@ -29,6 +29,13 @@ a {
     color: aliceblue;
 }
 
+#detailsList {
+    list-style: none;
+    padding: 0;
+    display: inline-block;
+
+}
+
 
 a:hover {
     color: grey;

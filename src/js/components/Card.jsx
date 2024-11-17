@@ -19,7 +19,7 @@ export const Card = ({element}) => {
   }
 
   useEffect(() => {
-    const isAdded = store.favorites.find(favorite => favorite.uid === uid)
+    const isAdded = store.favorites.find(favorite => favorite.uid === uid && favorite.name === name)
     isAdded && setIsFavorite(true)
   }, []);
 
