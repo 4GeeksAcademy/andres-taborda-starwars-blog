@@ -11,12 +11,13 @@ export const Home = () => {
 
 	const location = useLocation()
 	const category = location.pathname.replace("/", "").trim()
-
+	
+	
 	useEffect(() => {
 		
-		actions.getData(category)
+		actions.getData({category})
 	
-	}, [location]);
+	}, [category]);
 
 	return (
 		<div className="text-center">								

@@ -34,7 +34,7 @@ const Layout = () => {
 						<Route path="/" element={<Navigate to="/people" replace />} />
 						<Route path="/:category" element={<Home />} />
 						<Route path="/favorites" element={<Favorites />} />
-						<Route path="/details/:id" element={<Details />} />
+						<Route path="/details/:category/:id" element={<Details />} />
 						<Route path="*" element={<h1>Not found!</h1>} />
 					</Routes>
 				</main>

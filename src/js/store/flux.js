@@ -1,22 +1,77 @@
-import { useFetchData } from "../common/hooks/useFetchData";
-import { useEffect } from "react";
+import { makeUrlFetch } from "../common/helpers/makeUrlFetch";
+
+const localCache = new Map()
 
 const getState = ({ getStore, getActions, setStore }) => {
-	const { data, isLoading, error, getData } = useFetchData()
-	
-	useEffect(() => {
-		setStore({ result: data})		
-	}, [data]);
 
 	return {
 		store: {
 			result:[],
 			favorites: [], 
-			details: null
+			details: null,
+			error:null,
+			isloading: false
 		},
 		actions: {
-			getData: async (category) => {
-				getData({ category:category })
+			getData: async (options) => {
+				const url = makeUrlFetch(options)
+				console.log(localCache);
+				
+
+				const urlLastSearch = JSON.parse(localStorage.getItem("lastSearch"))?.url || ""
+
+				if (localCache.get(url)) {
+					setStore({ result: localCache.get(url) })
+					return
+				}
+
+				if (urlLastSearch === url) {
+					setStore({ result:JSON.parse(localStorage.getItem("lastSearch")).data })
+					return
+				}
+
+				setStore({ error: null })
+				setStore({ isLoading:true })
+				
+				try { 
+					
+					const response = await fetch(url)
+
+					if (!response.ok) {
+						const customError = {
+							code: response.status,
+							message: response.statusText
+						}
+						setStore({ error: customError })
+						throw new Error("Load data fail");
+						
+					}
+					const data = await response.json()
+					let result
+
+					if ("results" in data) {
+						const newData = data.results.map(async element => {
+							const urlImage = await getActions().getImageUrl(options.category,element.uid)
+							return { ...element, image: urlImage}
+						})
+						result = await Promise.all(newData)
+					}
+
+					if ("result" in data) {
+						result = data.result
+					}					
+
+					setStore({ result: result})
+
+					localCache.set(url,result)
+
+					localStorage.setItem("lastSearch", JSON.stringify({ url:url,data:result }))
+
+				} catch (error) {
+					console.log(error.message);      
+				} finally{
+					setStore({ isLoading:false })
+				}
 			},
 			addFavorites: (element) => {
 				const { favorites } = getStore()
@@ -37,21 +92,17 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const favorites = JSON.parse(localStorage.getItem("favorites")) || []
 				setStore({ favorites: favorites})
 			},
-			getDetails: async (id) => {
-				const urlDetails = getStore().result.find(element => element.uid === id)?.url
+			getImageUrl: async (category, uid) => {
 				try {
-					const response = await fetch(urlDetails)
-					if (!response.ok) {
-						throw new Error("Failed to load data");
-						
+					const urlImage = `https://starwars-visualguide.com/assets/img/${category === "people" ? 'characters': category}/${uid}.jpg`
+					const response = await fetch(urlImage)
+					if (response.ok) {
+						return urlImage			
 					}
-					const { result } = await response.json()
-					setStore({ details: result })
-
 				} catch (error) {
 					console.log(error);					
 				}
-				
+				return "https://starwars-visualguide.com/assets/img/big-placeholder.jpg"
 			}
 		}
 	};

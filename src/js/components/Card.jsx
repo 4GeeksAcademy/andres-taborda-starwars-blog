@@ -1,14 +1,17 @@
-import PropTypes, { element } from 'prop-types';
+import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Context } from '../store/AppContext';
 
-export const Card = ({element}) => {
-  const { name, uid , image} = element
- 
 
+export const Card = ({element, category}) => {
+  const { name, uid, image } = element
+ 
+  
   const [isFavorite, setIsFavorite] = useState(false);
   const { store, actions } = useContext(Context);
+  
+  
 
   const handleClick = (e) => {
     e.preventDefault()
@@ -26,7 +29,7 @@ export const Card = ({element}) => {
   
 
   return (
-    <Link to={`/details/${uid}`} className="card bg-transparent text-white shadow " style={{width: "12rem", height:"25rem"}}>
+    <Link to={`/details/${category}/${uid}`} state={{ image: image }} className="card bg-transparent text-white shadow " style={{width: "12rem", height:"25rem"}}>
       <img 
         src={image}
         className="card-img-top " 
@@ -46,6 +49,6 @@ export const Card = ({element}) => {
 }
 
 Card.propTypes = {
-  element: PropTypes.object
-
+  element: PropTypes.object,
+  categoty: PropTypes.string
 }
