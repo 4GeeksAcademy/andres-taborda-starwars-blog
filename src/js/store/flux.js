@@ -1,3 +1,4 @@
+import { BASE_URL } from "../common/const";
 import { makeUrlFetch } from "../common/helpers/makeUrlFetch";
 
 const localCache = new Map()
@@ -10,14 +11,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 			favorites: [], 
 			details: null,
 			error:null,
-			isloading: false
+			isloading: false,
+			searchData: {}
 		},
 		actions: {
 			getData: async (options) => {
 				const url = makeUrlFetch(options)
-				console.log(localCache);
 				
-
 				const urlLastSearch = JSON.parse(localStorage.getItem("lastSearch"))?.url || ""
 
 				if (localCache.get(url)) {
@@ -103,6 +103,27 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log(error);					
 				}
 				return "https://starwars-visualguide.com/assets/img/big-placeholder.jpg"
+			},
+			getByName: async (name) => {
+				
+				if (name === "") {
+					getActions().resetDataSearch()
+					return
+				}
+				const response1 = fetch(`${BASE_URL}people/?name=${name}`);
+				const response2 = fetch(`${BASE_URL}vehicles/?name=${name}`);
+				const response3 = fetch(`${BASE_URL}planets/?name=${name}`);
+				
+				const [respuesta1, respuesta2, respuesta3] = await Promise.all([response1, response2, response3]);
+
+				const data1 = await respuesta1.json();
+				const data2 = await respuesta2.json();
+				const data3 = await respuesta3.json();
+
+				setStore({ searchData: { people:data1.result.slice(0, 3), vehicles:data2.result.slice(0, 3), planets:data3.result.slice(0, 3) } })
+			},
+			resetDataSearch: async () => {
+				setStore({searchData:{people:[], vehicles:[], planets:[]}})
 			}
 		}
 	};

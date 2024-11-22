@@ -9,11 +9,8 @@ body {
 }
 
 main {
-    height: 100vh;
-    height: -webkit-fill-available;
-    max-height: 100vh;
+
     overflow-x: auto;
-    overflow-y: hidden;
 
 }
 
@@ -29,7 +26,10 @@ a {
     color: aliceblue;
 }
 
-#detailsList {
+
+
+#detailsList,
+.sear-list {
     list-style: none;
     padding: 0;
     display: inline-block;
@@ -45,4 +45,51 @@ a:hover {
 .active-link {
     color: white;
     border-left: 5px solid rgb(225 80 33);
+}
+
+.input-search {
+    width: 25%;
+    border-radius: 5px;
+    outline: none;
+    border: 1px solid #303030;
+    border-bottom: 2px solid #9a9a9a;
+    padding: 1rem;
+    background-color: #2d2d2d;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.input-search::placeholder {
+    color: #9a9a9a;
+}
+
+.input-search:hover {
+    background-color: #313131;
+}
+
+.input-search:active,
+.input-search:focus {
+    background-color: #1e1f20;
+    border: 1px solid #2d2d2d;
+    border-bottom: 2px solid #DC3545;
+}
+
+#searchResults {
+    z-index: 1;
+    background-color: #2d2d2d;
+    border-radius: 10px;
+    padding: 1rem;
+    left: 37.5%;
+    top: 108%;
+    width: 25%;
+    color: white;
+    display: none;
+}
+
+#searchResults a {
+    color: white;
+}
+
+#searchResults a:hover {
+    color: rgb(110, 110, 110);
 }

@@ -4,11 +4,20 @@ import { Context } from '../store/AppContext'
 
 
 export const Details = () => {
+  const [image, setImage] = useState("");
   const { store, actions } = useContext(Context)
   const [props, setProps] = useState([]);
   const { result } = store
   const { id, category } = useParams()
   const  { state } = useLocation();
+
+  useEffect(() => {
+    if(state) {
+      setImage(state.image)
+      return
+    }
+    actions.getImageUrl(category,id).then(setImage)    
+  }, []);
 
   useEffect(() => { 
     actions.getData({category,id})    
@@ -28,7 +37,7 @@ export const Details = () => {
         <div className="row g-0">
           <div className="col-md-7" style={{height:"550px"}} >
             <img 
-              src={state.image} 
+              src={image} 
               className="img-fluid rounded-start border-end border-danger border-3"
               style={{width:"100%", height:"100%", objectFit:"contain"}} 
               alt={result?.properties?.name}
